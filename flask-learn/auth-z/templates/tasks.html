@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task List</title>
+</head>
+<body>
+
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.name }}!</p>
+    {% else %}
+        <p>Please <a href="/login">login</a> to access your dashboard.</p>
+    {% endif %}
+
+    <h1>Tasks</h1>
+    <ul>
+    {% for task_id, task in tasks.items() %}
+        <li>{{ task.title }} - {% if task.is_completed %}Completed{% else %}Pending{% endif %}</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
+

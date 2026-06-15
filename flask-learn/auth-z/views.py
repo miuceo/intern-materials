@@ -4,7 +4,7 @@ from functools import wraps
 from hashlib import sha1
 
 import jwt
-from flask import Blueprint, request, make_response, Response
+from flask import Blueprint, request, make_response, Response, render_template
 
 from app import app
 from db import task_storage, users
@@ -51,27 +51,31 @@ def auth_required(func):
     return wrapper
 
 
-@bp.get("/")
-@auth_required
-def list_tasks():
-    completed_flag = request.args.get("completed")
-    
-    if completed_flag and completed_flag.lower() not in ("true", "false"):
-        return make_response(
-            {"message": "Wrong value for 'completed', try 'true' or 'false'"}, 400
-        )
-        
-    flag_mapping = {"true": True, "false": False}
-    
-    tasks = task_storage()
-    
-    if completed_flag:
-        tasks = {
-            task_id: task_info for task_id, task_info in tasks.info()
-            if task_info["completed"] == flag_mapping[completed_flag.lower()]
-        }
-        
-    return make_response(tasks)
+
+@bp.get("/") 
+@auth_required 
+def list_tasks(): 
+    completed_flag = request.args.get("completed")  # fetch the query parameter 
+    # check that query parameter has valid value 
+    if completed_flag and completed_flag.lower() not in ("true", "false"): 
+        return make_response( 
+            {"message": "Wrong value for `completed`. Expected `true` or `false`."}, 
+            400, 
+        ) 
+ 
+    flag_mapping = {"true": True, "false": False} 
+ 
+    # return all user tasks if query parameter was not provided 
+    tasks = task_storage 
+    if completed_flag: 
+        # filter only not completed tasks 
+        tasks = { 
+            task_id: task_info for task_id, task_info in tasks.items() 
+            if task_info["is_completed"] == flag_mapping[completed_flag.lower()] 
+        } 
+    # use a template to build an html page 
+    return render_template("tasks.html", tasks=tasks)
+
 
 
 @bp.post("/")
@@ -106,7 +110,7 @@ def mark_complete(task_id):
   
 @bp.delete("/<task_id>")
 @auth_required
-def mark_complete(task_id):
+def delete_task(task_id):
     task = task_storage.get(task_id)
     if not task:
         return make_response({"message": "Task not found"}, 404)

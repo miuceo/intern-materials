@@ -1,0 +1,19 @@
+{% extends "base.html" %} 
+{% block title %}Auth{% endblock %} 
+{% block content %} 
+<div> 
+    {% if message['content'] %} 
+        {% if message['is_error'] %}
+            <p style="color: red"> 
+        {% else %}
+            <p style="color: green">
+        {% endif %} 
+          {{ message['content'] }} 
+        </p> 
+    {% endif %} 
+    {% block form %} 
+    <!-- Page-specific content goes here --> 
+    {% endblock %} 
+</div> 
+{% endblock %} 
+

@@ -1,0 +1,33 @@
+{% extends "tasks/base.html" %} 
+{% block title %}User Tasks{% endblock %} 
+{% block task %} 
+<h2>Your Tasks, {{ session['username'] }}</h2> 
+{% if tasks %} 
+    <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;"> 
+        <thead> 
+            <tr> 
+                <th>Title</th> 
+                <th>Created At</th> 
+                <th>Status</th> 
+            </tr> 
+        </thead> 
+        <tbody> 
+            {% for task_id, task_info in tasks.items() %} 
+            <tr> 
+                <td>{{ task_info.title }}</td> 
+                <td>{{ task_info.created_at }}</td> 
+                <td>{{ "Completed" if task_info.is_completed else "Not Completed" }}</td> 
+            </tr> 
+            {% endfor %} 
+        </tbody> 
+    </table> 
+{% else %} 
+    <p>No tasks available. Create a new task below.</p> 
+{% endif %} 
+<div> 
+    <form action="{{ url_for('tasks.create_task') }}" method="get"> 
+        <button type="submit">Create New Task</button> 
+    </form> 
+</div> 
+{% endblock %}
+
