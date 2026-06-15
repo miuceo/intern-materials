@@ -13,6 +13,8 @@ def get_sign_up_page():
     session.clear() 
 
     return render_template("sign_up.html", message=message) 
+
+
 @bp.post("/sign_up") 
 def sign_up(): 
     username = request.form.get("username") 
@@ -43,6 +45,7 @@ def get_login_page():
     message = session.get("message") 
     session.clear() 
     return render_template("login.html", message=message) 
+
 
 @bp.post("/login") 
 def login(): 
